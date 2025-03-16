@@ -1,27 +1,30 @@
 package com.example.watchtogether
 
-
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.ComponentActivity
+import androidx.activity.OnBackPressedCallback
+import android.app.AlertDialog
 
 class MainActivity : ComponentActivity() {
+
+    private lateinit var webView: WebView  // Declare webView at the class level
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         // Create WebView dynamically
-        val webView = WebView(this)
+        webView = WebView(this)
         setContentView(webView)
 
         // Configure WebView settings
         webView.settings.apply {
-            javaScriptEnabled = true // Enable JavaScript for modern web apps
-            domStorageEnabled = true // Enable HTML5 local storage
+            javaScriptEnabled = true
+            domStorageEnabled = true
             useWideViewPort = true
             loadWithOverviewMode = true
             allowContentAccess = true
@@ -39,5 +42,30 @@ class MainActivity : ComponentActivity() {
         }
 
         webView.loadUrl("https://screen.1tushar.com")
+
+        // Handle back button press (This is the crucial part for your requirement)
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (webView.canGoBack()) {
+                    webView.goBack()
+                } else {
+                    // Show confirmation dialog before exiting
+                    showExitConfirmationDialog()
+                }
+            }
+        })
+    }
+
+
+    private fun showExitConfirmationDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("Exit App")
+            .setMessage("Are you sure you want to exit?")
+            .setPositiveButton("Yes") { _, _ ->
+                // Finish the activity and close the app
+                finish()
+            }
+            .setNegativeButton("No", null) // Dismiss the dialog
+            .show()
     }
 }
