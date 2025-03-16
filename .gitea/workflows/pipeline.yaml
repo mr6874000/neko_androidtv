@@ -2,9 +2,6 @@ name: Android Gradle Build and Upload
 
 on:
   push:
-    branches:
-      - main
-      - master
   pull_request:
 
 jobs:
