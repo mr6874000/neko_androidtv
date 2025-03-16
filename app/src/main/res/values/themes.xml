@@ -1,0 +1,4 @@
+<resources>
+
+    <style name="Theme.WatchTogether" parent="Theme.AppCompat.DayNight.NoActionBar" />
+</resources>
