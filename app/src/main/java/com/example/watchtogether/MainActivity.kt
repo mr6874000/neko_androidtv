@@ -8,20 +8,19 @@ import android.webkit.WebViewClient
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
 import android.app.AlertDialog
+import android.view.View
 
 class MainActivity : ComponentActivity() {
 
-    private lateinit var webView: WebView  // Declare webView at the class level
+    private lateinit var webView: WebView
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Create WebView dynamically
         webView = WebView(this)
         setContentView(webView)
 
-        // Configure WebView settings
         webView.settings.apply {
             javaScriptEnabled = true
             domStorageEnabled = true
@@ -31,41 +30,44 @@ class MainActivity : ComponentActivity() {
             builtInZoomControls = false
             displayZoomControls = false
             cacheMode = WebSettings.LOAD_NO_CACHE
+            // Removed deprecated settings:
+            // setRenderPriority(WebSettings.RenderPriority.HIGH)
+            // setEnableSmoothTransition(true)
         }
 
-        // Load webpage
+        webView.setLayerType(View.LAYER_TYPE_HARDWARE, null)
+
         webView.webViewClient = object : WebViewClient() {
+            @Deprecated("Deprecated in Java")
+            @Suppress("DEPRECATION")
             override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
                 url?.let { view?.loadUrl(it) }
                 return true
             }
+            // Removed shouldInterceptRequest
         }
 
         webView.loadUrl("https://screen.1tushar.com/?usr=atv&pwd=tushar&cast=1")
 
-        // Handle back button press (This is the crucial part for your requirement)
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 if (webView.canGoBack()) {
                     webView.goBack()
                 } else {
-                    // Show confirmation dialog before exiting
                     showExitConfirmationDialog()
                 }
             }
         })
     }
 
-
     private fun showExitConfirmationDialog() {
         AlertDialog.Builder(this)
             .setTitle("Exit App")
             .setMessage("Are you sure you want to exit?")
             .setPositiveButton("Yes") { _, _ ->
-                // Finish the activity and close the app
                 finish()
             }
-            .setNegativeButton("No", null) // Dismiss the dialog
+            .setNegativeButton("No", null)
             .show()
     }
 }
