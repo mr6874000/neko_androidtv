@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4  # Use v4 for latest features
+        uses: actions/checkout@v4
 
       - name: Set up JDK 17
         uses: actions/setup-java@v3
@@ -36,9 +36,9 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build Debug APK
-        run: ./gradlew assembleDebug --stacktrace  # Build with stacktrace
+        run: ./gradlew assembleDebug --stacktrace
 
-      - name: Run Unit Tests  # Added Unit Tests!
+      - name: Run Unit Tests
         run: ./gradlew test
 
       - name: Upload APK Artifact
