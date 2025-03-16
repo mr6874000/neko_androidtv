@@ -41,7 +41,7 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-        webView.loadUrl("https://screen.1tushar.com")
+        webView.loadUrl("https://screen.1tushar.com/?usr=atv&pwd=tushar&cast=1")
 
         // Handle back button press (This is the crucial part for your requirement)
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
