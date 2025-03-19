@@ -1,6 +1,7 @@
 package com.example.watchtogether
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.webkit.WebSettings
@@ -20,6 +21,14 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // Start the foreground service to keep the WebView running in the background
+        val serviceIntent = Intent(this, ForegroundService::class.java)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(serviceIntent)
+        } else {
+            startService(serviceIntent)
+        }
+
         webView = WebView(this)
         setContentView(webView)
 
@@ -32,8 +41,8 @@ class MainActivity : ComponentActivity() {
             builtInZoomControls = false
             displayZoomControls = false
             cacheMode = WebSettings.LOAD_NO_CACHE
+            mediaPlaybackRequiresUserGesture = false // Allow autoplay in background
         }
-        webView.settings.mediaPlaybackRequiresUserGesture = false // Allow autoplay
 
         webView.setLayerType(View.LAYER_TYPE_HARDWARE, null)
 
@@ -61,6 +70,18 @@ class MainActivity : ComponentActivity() {
                 }
             }
         })
+    }
+
+    override fun onPause() {
+        super.onPause()
+        webView.onPause()
+        webView.pauseTimers() // Prevent WebView from being destroyed
+    }
+
+    override fun onResume() {
+        super.onResume()
+        webView.onResume()
+        webView.resumeTimers()
     }
 
     private fun showExitConfirmationDialog() {
