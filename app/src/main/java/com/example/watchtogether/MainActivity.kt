@@ -33,6 +33,7 @@ class MainActivity : ComponentActivity() {
             displayZoomControls = false
             cacheMode = WebSettings.LOAD_NO_CACHE
         }
+        webView.settings.mediaPlaybackRequiresUserGesture = false // Allow autoplay
 
         webView.setLayerType(View.LAYER_TYPE_HARDWARE, null)
 
